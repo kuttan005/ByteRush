@@ -1,0 +1,188 @@
+{
+  "info": {
+    "name": "AcademiChain API",
+    "description": "Complete API collection for AcademiChain backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/health",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Check if the API is running"
+      }
+    },
+    {
+      "name": "Upload File to IPFS",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": "",
+              "description": "Select a file to upload to IPFS"
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:3001/upload",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "upload"
+          ]
+        },
+        "description": "Upload a credential document to IPFS via Pinata"
+      }
+    },
+    {
+      "name": "Issue Credential",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"studentAddress\": \"0x1234567890123456789012345678901234567890\",\n  \"cid\": \"QmExampleCID123456789\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:3001/issue",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "issue"
+          ]
+        },
+        "description": "Issue a credential on the blockchain"
+      }
+    },
+    {
+      "name": "Get Credential by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3001/credential/1",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "credential",
+            "1"
+          ]
+        },
+        "description": "Retrieve a credential from the blockchain by ID"
+      }
+    },
+    {
+      "name": "Complete Flow - Upload then Issue",
+      "item": [
+        {
+          "name": "Step 1: Upload to IPFS",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.environment.set(\"cid\", jsonData.cid);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "http://localhost:3001/upload",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "upload"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Step 2: Issue Credential",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"studentAddress\": \"0x1234567890123456789012345678901234567890\",\n  \"cid\": \"{{cid}}\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3001/issue",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "3001",
+              "path": [
+                "issue"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3001"
+    },
+    {
+      "key": "cid",
+      "value": ""
+    }
+  ]
+}
